@@ -11,8 +11,7 @@ import (
 const (
 	FREE  rune = '0'
 	BLACK rune = '1'
-	WHITE rune = '2'
-	TABOO rune = '3'
+	TABOO rune = '2'
 )
 
 type Board struct {
@@ -82,7 +81,9 @@ func (b Board) getHorizontalMoves(x, y int) []Board {
 			moves = append(moves, b.getMove(x, y, x+1, y))
 		}
 	}
-	if b.isOnBoard(x+2, y) && rune(b.Board[y*b.size+x+1]) != FREE && rune(b.Board[y*b.size+x+1]) != TABOO {
+	if b.isOnBoard(x+2, y) &&
+		rune(b.Board[y*b.size+x+1]) != FREE &&
+		rune(b.Board[y*b.size+x+1]) != TABOO {
 		if rune(b.Board[y*b.size+x+2]) == FREE {
 			moves = append(moves, b.getMove(x, y, x+2, y))
 		}
@@ -94,7 +95,9 @@ func (b Board) getHorizontalMoves(x, y int) []Board {
 		}
 	}
 	if b.isOnBoard(x-2, y) {
-		if rune(b.Board[y*b.size+x-2]) == FREE && rune(b.Board[y*b.size+x-1]) != FREE && rune(b.Board[y*b.size+x-1]) != TABOO {
+		if rune(b.Board[y*b.size+x-2]) == FREE &&
+			rune(b.Board[y*b.size+x-1]) != FREE &&
+			rune(b.Board[y*b.size+x-1]) != TABOO {
 			moves = append(moves, b.getMove(x, y, x-2, y))
 		}
 	}
@@ -158,7 +161,7 @@ func (b Board) Heuristic(to Board) int {
 		for i := 0; i < b.size; i++ {
 			switch rune(b.Board[j*b.size+i]) {
 			case BLACK:
-				res += b.size - 1 - i + b.size - 1 - j
+				res += (b.size - 1 - i) + (b.size - 1 - j)
 			}
 		}
 	}
@@ -167,7 +170,7 @@ func (b Board) Heuristic(to Board) int {
 }
 
 // Print pseudographic of board
-var Symbols = map[rune]string{BLACK: "◎", WHITE: "◉", TABOO: "✕", FREE: " "}
+var Symbols = map[rune]string{BLACK: "◎", TABOO: "✕", FREE: " "}
 
 func (b Board) Print() {
 	// First row
@@ -176,7 +179,6 @@ func (b Board) Print() {
 		fmt.Print("⏉" + Symbols[rune(b.Board[i])])
 	}
 	fmt.Print("⏋\n")
-
 	// Middle
 	for j := 1; j < b.size-1; j++ {
 		fmt.Print("⎾" + Symbols[rune(b.Board[j*b.size])])
@@ -185,7 +187,6 @@ func (b Board) Print() {
 		}
 		fmt.Print("⏋\n")
 	}
-
 	// Last row
 	fmt.Print("⎾" + Symbols[rune(b.Board[b.size*(b.size-1)])])
 	for i := 1; i < b.size; i++ {

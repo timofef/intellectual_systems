@@ -2,6 +2,7 @@ package a_search
 
 import (
 	"container/heap"
+	"fmt"
 	"src/board"
 )
 
@@ -27,17 +28,19 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 		current.closed = true
 
 		// If found end -> trace back and return path
-		if current == allNodes.get(terminal) {
+		if current.pather.Board == allNodes.get(terminal).pather.Board {
 			var p []board.Board
 			curr := current
 			for curr != nil {
 				p = append(p, curr.pather)
 				curr = curr.parent
 			}
+			fmt.Printf("Opened: %d\n", openedList.Len())
 			return p, current.cost, true
 		}
 
 		for _, neighbour := range current.pather.GetNeighbours() {
+
 			cost := current.cost + 1
 			neighborNode := allNodes.get(neighbour)
 			// If already in OPENED -> check if cost is lower
@@ -45,8 +48,6 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 				if neighborNode.opened {
 					heap.Remove(openedList, neighborNode.index)
 				}
-				neighborNode.opened = false
-				neighborNode.closed = false
 			}
 			// If completely new node -> add to OPENED
 			if !neighborNode.opened && !neighborNode.closed {
@@ -57,5 +58,6 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 				heap.Push(openedList, neighborNode)
 			}
 		}
+
 	}
 }

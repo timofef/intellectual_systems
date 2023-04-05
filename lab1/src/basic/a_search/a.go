@@ -27,18 +27,17 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 		current.closed = true
 
 		// If found end -> trace back and return path
-		if current.pather.Board == allNodes.get(terminal).pather.Board {
+		if current == allNodes.get(terminal) {
 			var p []board.Board
 			curr := current
 			for curr != nil {
-				p = append(p, curr.pather)
+				p = append(p, curr.board)
 				curr = curr.parent
 			}
 			return p, current.cost, true
 		}
 
-		for _, neighbour := range current.pather.GetNeighbours() {
-
+		for _, neighbour := range current.board.GetNeighbours() {
 			cost := current.cost + 1
 			neighborNode := allNodes.get(neighbour)
 			// If already in OPENED -> check if cost is lower
@@ -46,8 +45,8 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 				if neighborNode.opened {
 					heap.Remove(openedList, neighborNode.index)
 				}
-				//neighborNode.opened = false
-				//neighborNode.closed = false
+				neighborNode.opened = false
+				neighborNode.closed = false
 			}
 			// If completely new node -> add to OPENED
 			if !neighborNode.opened && !neighborNode.closed {
@@ -58,15 +57,5 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 				heap.Push(openedList, neighborNode)
 			}
 		}
-
 	}
 }
-
-/*func worker(input chan *board.Board, ctx context.Context, group *sync.WaitGroup) {
-	for {
-		select {
-		case <-input:
-			case <-ctx.Done():
-		}
-	}
-}*/
