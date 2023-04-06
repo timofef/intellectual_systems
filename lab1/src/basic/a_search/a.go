@@ -2,6 +2,7 @@ package a_search
 
 import (
 	"container/heap"
+	"fmt"
 	"src/board"
 )
 
@@ -15,6 +16,8 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 	fromNode.opened = true
 	heap.Push(openedList, fromNode)
 
+	closedCounter := 0
+
 	for {
 		// If there's no path -> failure
 		if openedList.Len() == 0 {
@@ -25,6 +28,7 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 		current := heap.Pop(openedList).(*node)
 		current.opened = false
 		current.closed = true
+		closedCounter++
 
 		// If found end -> trace back and return path
 		if current == allNodes.get(terminal) {
@@ -34,6 +38,8 @@ func A(start, terminal board.Board) ([]board.Board, int, bool) {
 				p = append(p, curr.board)
 				curr = curr.parent
 			}
+
+			fmt.Printf("Iterations: %d\n", closedCounter)
 			return p, current.cost, true
 		}
 
