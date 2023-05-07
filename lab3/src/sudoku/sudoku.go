@@ -81,7 +81,7 @@ func (s *Sudoku) Solve() *Sudoku {
 
 func (s *Sudoku) getNeighbours() []*Sudoku {
 	var neighbourhood []*Sudoku
-	
+
 	// Get undefined variable with the smallest domain
 	var idx int
 	var smallestDomain []uint32
@@ -113,6 +113,10 @@ func (s *Sudoku) getNeighbours() []*Sudoku {
 
 		neighbourhood = append(neighbourhood, neighbour)
 	}
+
+	/*sort.Slice(neighbourhood, func(i, j int) bool {
+		return neighbourhood[i].heuristic() < neighbourhood[j].heuristic()
+	})*/
 
 	return neighbourhood
 }
