@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-var startFields map[int]struct{} = make(map[int]struct{})
+var startFields = make(map[int]struct{})
 
 type Sudoku struct {
 	size    int
@@ -81,20 +81,24 @@ func (s *Sudoku) Solve() *Sudoku {
 
 func (s *Sudoku) getNeighbours() []*Sudoku {
 	var neighbourhood []*Sudoku
-
-	// Get variable to set
+	
+	// Get undefined variable with the smallest domain
 	var idx int
+	var smallestDomain []uint32
+	smallestDomainLen := math.MaxInt
 	for i := 0; i < len(s.field); i++ {
 		if v := getIntFromBinary(s.field[i], s.size); v == 0 {
-			idx = i
-			break
+			d := extractDomain(
+				s.horizontalConstraint(i)|s.verticalConstraint(i)|s.blockConstraint(i),
+				s.size)
+			if len(d) < smallestDomainLen {
+				smallestDomain = d
+				smallestDomainLen = len(smallestDomain)
+				idx = i
+			}
 		}
 	}
-
-	// Get domain
-	domain := extractDomain(
-		s.horizontalConstraint(idx)|s.verticalConstraint(idx)|s.blockConstraint(idx),
-		s.size)
+	domain := smallestDomain
 
 	// Generate neighbours with forward checking
 	for i := 0; i < len(domain); i++ {
