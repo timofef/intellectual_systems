@@ -67,6 +67,8 @@ func (s *Sudoku) Solve() *Sudoku {
 	currMethod := 0
 	methods := []func(int, int, int) *Sudoku{s.insert, s.swap, s.megaswap}
 
+	shackesNum := 0
+
 	for h != 0 {
 		fmt.Printf("Heuristic: %3d     Blocks: %d", h, neighbourBlocks)
 
@@ -88,8 +90,9 @@ func (s *Sudoku) Solve() *Sudoku {
 				currMethod++
 				if currMethod == len(methods) {
 					currMethod = 0
-					//neighbourBlocks = 1
+					neighbourBlocks = 1
 					s.shake(r)
+					shackesNum++
 				}
 			}
 		} else {
@@ -98,6 +101,8 @@ func (s *Sudoku) Solve() *Sudoku {
 		h = s.heuristic()
 		fmt.Print("\033[1K\r")
 	}
+
+	fmt.Printf("Shakes: %d\n", shackesNum)
 
 	return s
 }
